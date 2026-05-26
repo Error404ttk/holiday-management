@@ -1,0 +1,25 @@
+{
+  "name": "hosxp-holiday-system",
+  "private": true,
+  "workspaces": [
+    "apps/api",
+    "apps/web"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace apps/api & npm run dev --workspace apps/web",
+    "dev:api": "npm run dev --workspace apps/api",
+    "dev:web": "npm run dev --workspace apps/web",
+    "dev:all": "concurrently \"npm run dev:api\" \"npm run dev:web\"",
+    "build": "npm run build --workspace apps/api && npm run build --workspace apps/web",
+    "start": "npm run start --workspace apps/api",
+    "preview": "npm run preview --workspace apps/web",
+    "typecheck": "npm run typecheck --workspace apps/api && npm run typecheck --workspace apps/web"
+  },
+  "dependencies": {
+    "@mdi/font": "^7.4.47",
+    "vuetify": "^4.0.7"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

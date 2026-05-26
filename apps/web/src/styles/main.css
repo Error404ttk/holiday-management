@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+
+:root {
+  color: #0f172a;
+  background: #f8fafc;
+  font-family: 'Sarabun', 'Noto Sans Thai', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  font-family: 'Sarabun', 'Noto Sans Thai', sans-serif;
+  background: #f8fafc;
+  overflow-x: hidden;
+}
+
+.page-shell {
+  max-width: 1440px;
+  padding: 24px;
+}
+
+.page-title {
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+  font-weight: 700;
+  margin-bottom: 4px;
+  line-height: 1.25;
+}
+
+.page-subtitle {
+  color: #475569;
+  margin: 0 0 24px;
+}
+
+.metric-value {
+  color: #0f172a;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 4px 0;
+}
+
+@media (max-width: 600px) {
+  .page-shell {
+    padding: 16px;
+  }
+}
