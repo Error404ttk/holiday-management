@@ -631,7 +631,7 @@ Example:
 
 ```env
 APP_NAME="HOSxP Holiday Management"
-APP_PORT=3000
+APP_PORT=3011
 DB_HOST=192.168.99.10
 DB_PORT=3306
 DB_NAME=hosxp

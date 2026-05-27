@@ -26,9 +26,15 @@ export function getCeYearRange(year: number, mode: YearMode): { startDate: strin
   };
 }
 
-export async function checkDatabaseHealth(): Promise<{ ok: number }> {
+export async function checkDatabaseHealth(): Promise<{ ok: number; host: string; port: number; database: string; table: string }> {
   const [rows] = await dbPool.execute<RowDataPacket[]>('SELECT 1 AS ok');
-  return { ok: Number(rows[0]?.ok ?? 0) };
+  return {
+    ok: Number(rows[0]?.ok ?? 0),
+    host: env.DB_HOST,
+    port: env.DB_PORT,
+    database: env.DB_NAME,
+    table: env.HOLIDAY_TABLE
+  };
 }
 
 function isValidHoliday(row: HosxpHolidayRow): boolean {

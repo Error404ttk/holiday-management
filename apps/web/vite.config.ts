@@ -4,13 +4,12 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   plugins: [vue()],
   server: {
-    port: Number(process.env.WEB_PORT ?? 5173),
+    port: Number(process.env.WEB_PORT ?? 5172),
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:3011',
         changeOrigin: true
       }
     }
   }
 });
-

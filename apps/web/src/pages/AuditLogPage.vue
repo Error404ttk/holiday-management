@@ -219,7 +219,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { apiErrorMessage } from '../services/api';
 import {
   filterAuditLogs,
@@ -251,6 +251,7 @@ const startDate = ref('');
 const endDate = ref('');
 const detailDialog = ref(false);
 const selectedLog = ref<AuditLog | null>(null);
+let auditRequestSeq = 0;
 
 const filteredLogs = computed(() => {
   console.log('Calculating filteredLogs from:', auditLogs.value.length, 'records');
@@ -278,42 +279,25 @@ function openDetail(log: AuditLog) {
 }
 
 async function loadAuditLogs() {
+  const requestId = ++auditRequestSeq;
   loading.value = true;
   errorMessage.value = '';
-  console.log('Fetching audit logs with filters:', {
-    username: usernameSearch.value,
-    action: selectedAction.value,
-    startDate: startDate.value,
-    endDate: endDate.value
-  });
+  console.log('Fetching audit logs');
   try {
-    const data = await getAuditLogs({
-      username: usernameSearch.value,
-      action: selectedAction.value,
-      startDate: startDate.value,
-      endDate: endDate.value
-    });
+    const data = await getAuditLogs();
     console.log('Received audit logs:', data);
+    if (requestId !== auditRequestSeq) return;
     auditLogs.value = data;
   } catch (error) {
+    if (requestId !== auditRequestSeq) return;
     console.error('Audit log fetch error:', error);
     errorMessage.value = apiErrorMessage(error);
   } finally {
-    loading.value = false;
+    if (requestId === auditRequestSeq) {
+      loading.value = false;
+    }
   }
 }
-
-let searchTimeout: number | null = null;
-watch(usernameSearch, () => {
-  if (searchTimeout) window.clearTimeout(searchTimeout);
-  searchTimeout = window.setTimeout(loadAuditLogs, 500);
-});
-
-onUnmounted(() => {
-  if (searchTimeout) window.clearTimeout(searchTimeout);
-});
-
-watch([selectedAction, startDate, endDate], loadAuditLogs);
 
 onMounted(loadAuditLogs);
 </script>

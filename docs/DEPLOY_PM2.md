@@ -27,7 +27,7 @@ cp .env.example .env
 ค่าที่ต้องตรวจ:
 
 - `NODE_ENV=production`
-- `API_PORT=3000`
+- `API_PORT=3011`
 - `FRONTEND_ORIGIN=https://your-domain.example`
 - `JWT_SECRET` ต้องเปลี่ยนจากค่า default และยาวพอ
 - `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`
@@ -76,7 +76,7 @@ pm2 stop hosxp-holiday-api
 
 ## 5. ตัวอย่าง Nginx Reverse Proxy
 
-ตัวอย่างนี้ให้ Nginx serve frontend static และ proxy `/api` ไป backend ที่ `localhost:3000`
+ตัวอย่างนี้ให้ Nginx serve frontend static และ proxy `/api` ไป backend ที่ `localhost:3011`
 
 ```nginx
 server {
@@ -89,7 +89,7 @@ server {
     client_max_body_size 1m;
 
     location /api/ {
-        proxy_pass http://127.0.0.1:3000/api/;
+        proxy_pass http://127.0.0.1:3011/api/;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -113,7 +113,7 @@ systemctl reload nginx
 ## 6. Network และ Firewall
 
 - เปิดเฉพาะ port ที่จำเป็น เช่น 80/443
-- ไม่ต้องเปิด port backend `3000` ให้ client ภายนอก ถ้าใช้ Nginx proxy
+- ไม่ต้องเปิด port backend `3011` ให้ client ภายนอก ถ้าใช้ Nginx proxy
 - จำกัด MySQL/MariaDB ให้รับเฉพาะ IP server ที่รัน backend
 - ห้ามเปิด MySQL/MariaDB ให้ client ทั่วไป
 - Frontend user ห้ามต่อฐานข้อมูลโดยตรง ทุกอย่างต้องผ่าน backend API
@@ -122,8 +122,8 @@ systemctl reload nginx
 ## 7. Smoke Test หลัง deploy
 
 ```bash
-curl http://127.0.0.1:3000/api/health
-curl http://127.0.0.1:3000/api/db/health
+curl http://127.0.0.1:3011/api/health
+curl http://127.0.0.1:3011/api/db/health
 ```
 
 จาก browser:

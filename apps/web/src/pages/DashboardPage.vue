@@ -137,7 +137,7 @@
                         v-bind="props"
                         class="mini-holiday-card shadow-sm"
                         :class="[h.type, { 'elevation-3': isHovering }]"
-                        @click="$router.push(`/holidays/${h.id}/edit`)"
+                        @click="openHoliday(h)"
                         style="cursor: pointer"
                       >
                         <div class="d-flex justify-space-between mb-1">
@@ -168,12 +168,15 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import { apiErrorMessage } from '../services/api';
+import { hasPermission } from '../services/auth.service';
 import { useHolidayStore } from '../stores/holiday';
 import type { Holiday } from '../types/holiday';
 import { currentBeYear, formatThaiDate, getTodayString } from '../utils/date';
 
 const holidayStore = useHolidayStore();
+const router = useRouter();
 const year = ref(currentBeYear());
 const errorMessage = ref('');
 
@@ -313,6 +316,15 @@ function getHolidayTypeText(type: string): string {
     case 'special': return 'วันหยุดพิเศษ';
     default: return 'วันหยุดราชการ';
   }
+}
+
+function openHoliday(holiday: Holiday) {
+  if (hasPermission('holiday.update')) {
+    router.push(`/holidays/${holiday.id}/edit`);
+    return;
+  }
+
+  router.push('/holidays');
 }
 
 function getHolidayDescription(name: string): string {

@@ -8,6 +8,7 @@ interface HolidayState {
   error: string | null;
   lastLoadedYear: number | null;
   lastLoadedMode: YearMode | null;
+  requestSeq: number;
 }
 
 export const useHolidayStore = defineStore('holiday', {
@@ -16,7 +17,8 @@ export const useHolidayStore = defineStore('holiday', {
     loading: false,
     error: null,
     lastLoadedYear: null,
-    lastLoadedMode: null
+    lastLoadedMode: null,
+    requestSeq: 0
   }),
 
   getters: {
@@ -36,24 +38,31 @@ export const useHolidayStore = defineStore('holiday', {
         return;
       }
 
+      const requestId = ++this.requestSeq;
       console.log(`Pinia: Fetching holidays for ${year} (${mode})`);
       this.loading = true;
       this.error = null;
       try {
         const data = await getHolidays({ year, mode });
+        if (requestId !== this.requestSeq) return;
         this.holidays = data;
         this.lastLoadedYear = year;
         this.lastLoadedMode = mode;
       } catch (err: any) {
+        if (requestId !== this.requestSeq) return;
         this.error = err.message || 'Failed to load holidays';
         throw err;
       } finally {
-        this.loading = false;
+        if (requestId === this.requestSeq) {
+          this.loading = false;
+        }
       }
     },
 
     clearCache() {
+      this.requestSeq += 1;
       this.holidays = [];
+      this.loading = false;
       this.lastLoadedYear = null;
       this.lastLoadedMode = null;
     }

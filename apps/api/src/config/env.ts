@@ -31,14 +31,14 @@ const rawEnv = {
   APP_DB_USER: process.env.APP_DB_USER ?? process.env.DB_USER_WRITE ?? process.env.DB_USER ?? process.env.HOSXP_DB_USER,
   APP_DB_PASSWORD: process.env.APP_DB_PASSWORD ?? process.env.DB_PASSWORD_WRITE ?? process.env.DB_PASSWORD ?? process.env.HOSXP_DB_PASSWORD,
   APP_DB_NAME: process.env.APP_DB_NAME ?? 'hosxp_holiday_app',
-  FRONTEND_ORIGIN: process.env.FRONTEND_ORIGIN ?? process.env.FRONTEND_URL ?? 'http://localhost:5173'
+  FRONTEND_ORIGIN: process.env.FRONTEND_ORIGIN ?? process.env.FRONTEND_URL ?? 'http://localhost:5172'
 };
 
 const schema = z.object({
   APP_NAME: z.string().default('HOSxP Holiday Management'),
   APP_ENV: z.enum(['development', 'test', 'production']).default('development'),
-  APP_PORT: z.coerce.number().int().positive().default(3000),
-  FRONTEND_ORIGIN: z.string().url().default('http://localhost:5173'),
+  APP_PORT: z.coerce.number().int().positive().default(3011),
+  FRONTEND_ORIGIN: z.string().url().default('http://localhost:5172'),
   DB_HOST: z.string().default('127.0.0.1'),
   DB_PORT: z.coerce.number().int().positive().default(3306),
   DB_USER: z.string().default('holiday_readonly'),

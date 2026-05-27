@@ -1,11 +1,12 @@
 import { Router } from 'express';
+import { authenticate, requirePermission } from '../middleware/auth.js';
 import { checkDatabaseHealth } from '../services/hosxpHolidayReadService.js';
 import { ErrorCode } from '../utils/httpError.js';
 import { logger } from '../utils/logger.js';
 
 export const dbRoutes = Router();
 
-dbRoutes.get('/db/health', async (_req, res) => {
+dbRoutes.get('/db/health', authenticate, requirePermission('setting.manage'), async (_req, res) => {
   try {
     const health = await checkDatabaseHealth();
     res.json({ success: true, data: health });
@@ -18,4 +19,3 @@ dbRoutes.get('/db/health', async (_req, res) => {
     });
   }
 });
-

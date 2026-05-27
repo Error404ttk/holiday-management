@@ -140,6 +140,7 @@ const result = ref<ResultState | null>(null);
 const loading = ref(false);
 const errorMessage = ref('');
 const holidays = ref<Holiday[]>([]);
+let checkRequestSeq = 0;
 
 const currentYearBE = computed(() => {
   return internalDate.value ? ceToBe(internalDate.value.getFullYear()) : currentBeYear();
@@ -229,10 +230,12 @@ async function loadHolidays() {
 }
 
 async function checkHoliday(dateStr: string) {
+  const requestId = ++checkRequestSeq;
   loading.value = true;
   errorMessage.value = '';
   try {
     const response = await checkHolidayApi(dateStr);
+    if (requestId !== checkRequestSeq) return;
     const holiday = response.holiday;
     const daysDiff = getDaysUntil(dateStr);
 
@@ -268,10 +271,13 @@ async function checkHoliday(dateStr: string) {
       };
     }
   } catch (error) {
+    if (requestId !== checkRequestSeq) return;
     result.value = null;
     errorMessage.value = apiErrorMessage(error);
   } finally {
-    loading.value = false;
+    if (requestId === checkRequestSeq) {
+      loading.value = false;
+    }
   }
 }
 
