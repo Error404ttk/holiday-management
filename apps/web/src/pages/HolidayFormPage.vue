@@ -118,8 +118,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn variant="text" @click="duplicateDialog = false">ยกเลิก</v-btn>
-          <v-btn color="primary" variant="flat" @click="confirmDuplicateSave">ดำเนินการต่อ</v-btn>
+          <v-btn variant="text" :disabled="loading" @click="duplicateDialog = false">ยกเลิก</v-btn>
+          <v-btn color="primary" variant="flat" :loading="loading" @click="confirmDuplicateSave">ดำเนินการต่อ</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -211,7 +211,7 @@ const snackbarColor = ref<'success' | 'error'>('success');
 const duplicateDialog = ref(false);
 const confirmSaveDialog = ref(false);
 const duplicateHoliday = ref<Holiday | null>(null);
-const pendingSave = ref(false);
+const duplicateConfirmed = ref(false);
 
 const holidayId = computed(() => String(route.params.id));
 const isEditMode = computed(() => route.name === 'holiday-edit');
@@ -234,6 +234,11 @@ watch(() => form.holiday_name, (newName) => {
       form.holiday_type = suggested;
     }
   }
+});
+
+watch(() => form.holiday_date, () => {
+  duplicateConfirmed.value = false;
+  duplicateHoliday.value = null;
 });
 
 onMounted(async () => {
@@ -274,12 +279,30 @@ async function submitForm() {
   const validation = await formRef.value?.validate();
   if (!validation?.valid) return;
 
+  if (!duplicateConfirmed.value) {
+    loading.value = true;
+    errorMessage.value = '';
+    try {
+      const duplicate = await findDuplicateHoliday();
+      if (duplicate) {
+        duplicateHoliday.value = duplicate;
+        duplicateDialog.value = true;
+        return;
+      }
+    } catch (error) {
+      showError(error);
+      return;
+    } finally {
+      loading.value = false;
+    }
+  }
+
   confirmSaveDialog.value = true;
 }
 
 function confirmDuplicateSave() {
   duplicateDialog.value = false;
-  pendingSave.value = true;
+  duplicateConfirmed.value = true;
   confirmSaveDialog.value = true;
 }
 
@@ -319,6 +342,7 @@ async function saveHoliday() {
     }
 
     confirmSaveDialog.value = false;
+    duplicateConfirmed.value = false;
     holidayStore.clearCache();
     showSuccess('บันทึกข้อมูลสำเร็จ');
     window.setTimeout(() => {

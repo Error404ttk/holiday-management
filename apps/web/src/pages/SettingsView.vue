@@ -22,11 +22,21 @@
               <div class="text-overline text-primary">HOSxP Database (MySQL)</div>
               <div class="d-flex justify-space-between align-center py-2 border-b border-dashed">
                 <span class="text-body-2">Server Address</span>
-                <span class="text-body-2 font-weight-bold">{{ maskedIp }}</span>
+                <span class="text-body-2 font-weight-bold">{{ dbHealth ? maskedIp : '-' }}</span>
               </div>
               <div class="d-flex justify-space-between align-center py-2 border-b border-dashed">
                 <span class="text-body-2">Database Name</span>
-                <span class="text-body-2 font-weight-bold">{{ dbName }}</span>
+                <span class="text-body-2 font-weight-bold">{{ dbHealth?.database || '-' }}</span>
+              </div>
+              <div class="d-flex justify-space-between align-center py-2 border-b border-dashed">
+                <span class="text-body-2">Status</span>
+                <v-chip
+                  size="x-small"
+                  :color="dbStatusColor"
+                  variant="flat"
+                >
+                  {{ dbStatusText }}
+                </v-chip>
               </div>
             </div>
 
@@ -38,7 +48,12 @@
               </div>
             </div>
 
+            <v-alert v-if="healthError" type="error" variant="tonal" density="compact" class="mt-6 text-caption">
+              {{ healthError }}
+            </v-alert>
+
             <v-alert
+              v-else
               type="info"
               variant="tonal"
               density="compact"
@@ -62,7 +77,7 @@
             <div v-if="schemaConfig" class="schema-info">
               <div class="d-flex justify-space-between py-2 border-b border-dashed">
                 <span class="text-body-2">ชื่อตารางหลัก</span>
-                <span class="text-body-2 font-weight-bold text-mono">{{ tableName }}</span>
+                <span class="text-body-2 font-weight-bold text-mono">{{ dbHealth?.table || '-' }}</span>
               </div>
               <div class="d-flex justify-space-between py-2 border-b border-dashed">
                 <span class="text-body-2">คอลัมน์วันที่</span>
@@ -145,27 +160,52 @@
 
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
+import { apiErrorMessage } from '../services/api';
+import { getDbHealth, type DbHealth } from '../services/db.service';
 import { getHolidaySchemaConfig, type HolidaySchemaConfig } from '../services/holiday.service';
 import { getVersionDate } from '../utils/date';
 
 const schemaConfig = ref<HolidaySchemaConfig | null>(null);
-const envHost = ref('192.168.99.254'); // Mock for view
-const dbName = ref('sarapee'); // Mock for view
-const tableName = ref('holiday'); // Mock for view
+const dbHealth = ref<DbHealth | null>(null);
+const loadingHealth = ref(false);
+const healthError = ref('');
 
 const versionDate = computed(() => getVersionDate());
 
 const maskedIp = computed(() => {
-  const parts = envHost.value.split('.');
-  if (parts.length !== 4) return envHost.value;
+  const host = dbHealth.value?.host || '';
+  const parts = host.split('.');
+  if (parts.length !== 4) return host;
   return `${parts[0]}.${parts[1]}.**.**`;
 });
 
+const dbStatusText = computed(() => {
+  if (loadingHealth.value) return 'Checking';
+  if (healthError.value) return 'Disconnected';
+  return dbHealth.value?.ok === 1 ? 'Connected' : 'Unknown';
+});
+
+const dbStatusColor = computed(() => {
+  if (loadingHealth.value) return 'grey';
+  if (healthError.value) return 'error';
+  return dbHealth.value?.ok === 1 ? 'success' : 'warning';
+});
+
 async function loadSettings() {
+  loadingHealth.value = true;
+  healthError.value = '';
   try {
-    schemaConfig.value = await getHolidaySchemaConfig();
+    const [schema, health] = await Promise.all([
+      getHolidaySchemaConfig(),
+      getDbHealth()
+    ]);
+    schemaConfig.value = schema;
+    dbHealth.value = health;
   } catch (error) {
     console.error('Failed to load settings', error);
+    healthError.value = apiErrorMessage(error);
+  } finally {
+    loadingHealth.value = false;
   }
 }
 

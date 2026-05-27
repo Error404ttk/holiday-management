@@ -64,6 +64,12 @@
         <div class="text-subtitle-2 font-weight-bold text-primary mb-3">เวอร์ชันปัจจุบัน (V1.{{ getVersionDate() }})</div>
         <v-list density="compact" class="pa-0 mb-6">
           <v-list-item prepend-icon="mdi-check-circle" color="success" class="min-h-0">
+            <v-list-item-title class="text-body-2">ปรับปรุง UX wiring, ป้องกัน stale response และตั้งค่า port เป็น 5172/3011</v-list-item-title>
+          </v-list-item>
+          <v-list-item prepend-icon="mdi-check-circle" color="success" class="min-h-0">
+            <v-list-item-title class="text-body-2">เพิ่ม Senior Code Review และ hardening ก่อนเตรียม push ขึ้น GitHub</v-list-item-title>
+          </v-list-item>
+          <v-list-item prepend-icon="mdi-check-circle" color="success" class="min-h-0">
             <v-list-item-title class="text-body-2">เพิ่มระบบวิเคราะห์ประเภทวันหยุดอัตโนมัติในหน้า Form</v-list-item-title>
           </v-list-item>
           <v-list-item prepend-icon="mdi-check-circle" color="success" class="min-h-0">

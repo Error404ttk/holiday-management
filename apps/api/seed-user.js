@@ -32,10 +32,16 @@ const dbConfig = {
 };
 
 const USERNAME = 'admin';
-const PASSWORD = 'admin1234';
+const PASSWORD = process.env.ADMIN_PASSWORD;
 const FULL_NAME = 'System Administrator';
 
 async function seed() {
+  if (!PASSWORD || PASSWORD.length < 12) {
+    console.error('ADMIN_PASSWORD must be set and at least 12 characters long before running seed-user.js');
+    process.exitCode = 1;
+    return;
+  }
+
   console.log(`Connecting to database host: ${dbConfig.host}:${dbConfig.port}...`);
   
   let connection;
@@ -164,7 +170,7 @@ async function seed() {
     console.log('======================================================');
     console.log(`Database Name: ${dbConfig.database}`);
     console.log(`Username     : ${USERNAME}`);
-    console.log(`Password     : ${PASSWORD}`);
+    console.log('Password     : set from ADMIN_PASSWORD environment variable');
     console.log(`Role         : super_admin (สิทธิ์สูงสุด)`);
     console.log('======================================================\n');
     
