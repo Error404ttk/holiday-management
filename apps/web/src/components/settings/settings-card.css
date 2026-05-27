@@ -1,0 +1,27 @@
+.text-mono {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.settings-row {
+  align-items: flex-start;
+  border-bottom: thin dashed rgba(var(--v-border-color), var(--v-border-opacity));
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+
+.settings-row > span {
+  min-width: 0;
+}
+
+.settings-row > span:last-child {
+  display: block;
+  line-height: 1.35;
+  max-width: 60%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  text-align: right;
+  white-space: normal;
+  word-break: break-word;
+}

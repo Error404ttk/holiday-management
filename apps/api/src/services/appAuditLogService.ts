@@ -10,7 +10,7 @@ export interface AuditLogFilters {
   endDate?: string;
 }
 
-interface AppAuditLogInput {
+export interface AppAuditLogInput {
   action: string;
   username: string;
   fullName?: string;
@@ -54,6 +54,15 @@ export async function writeAppAuditLogWithConnection(_connection: PoolConnection
   // Use appDbPool instead of the provided connection because they may be on different servers
   // or have different user permissions, preventing a single shared connection.
   await writeAppAuditLog(input);
+}
+
+export async function writeAppAuditLogWithAppConnection(connection: PoolConnection, input: AppAuditLogInput): Promise<void> {
+  await connection.execute(
+    `INSERT INTO audit_logs
+      ${auditColumns}
+     ${auditValues}`,
+    auditParams(input)
+  );
 }
 
 export async function listAppAuditLogs(filters: AuditLogFilters = {}): Promise<Record<string, unknown>[]> {

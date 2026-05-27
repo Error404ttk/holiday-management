@@ -73,17 +73,30 @@
             <v-list-item-title class="text-body-2">เพิ่มระบบวิเคราะห์ประเภทวันหยุดอัตโนมัติในหน้า Form</v-list-item-title>
           </v-list-item>
           <v-list-item prepend-icon="mdi-check-circle" color="success" class="min-h-0">
-            <v-list-item-title class="text-body-2">ปรับปรุงระบบบันทึก Audit Log ให้เสถียรและอ่านง่ายขึ้น</v-list-item-title>
+            <v-list-item-title class="text-body-2">ปรับหน้า ตั้งค่าระบบ ให้ตรวจสถานะ API, HOSxP DB, App DB และ Schema จากข้อมูลจริง</v-list-item-title>
           </v-list-item>
           <v-list-item prepend-icon="mdi-check-circle" color="success" class="min-h-0">
-            <v-list-item-title class="text-body-2">แก้ไขบั๊กการดึงข้อมูล Primary Key ในตาราง HOSxP</v-list-item-title>
+            <v-list-item-title class="text-body-2">เพิ่มระบบจัดการผู้ใช้งาน พร้อมค้นหา แบ่งหน้า เพิ่มผู้ใช้ แก้ไขสิทธิ์ และเปิด/ปิดบัญชี</v-list-item-title>
           </v-list-item>
           <v-list-item prepend-icon="mdi-check-circle" color="success" class="min-h-0">
-            <v-list-item-title class="text-body-2">เพิ่มการตรวจสอบข้อมูลซ้ำ (Atomic Check) ที่ฝั่ง Backend</v-list-item-title>
+            <v-list-item-title class="text-body-2">เพิ่ม policy ป้องกันการเปลี่ยนสิทธิ์ตนเอง และควบคุมการจัดการสิทธิ์ super_admin</v-list-item-title>
+          </v-list-item>
+          <v-list-item prepend-icon="mdi-check-circle" color="success" class="min-h-0">
+            <v-list-item-title class="text-body-2">ปรับการบันทึกผู้ใช้งานและ Audit Log ให้อยู่ใน transaction เดียวกัน</v-list-item-title>
+          </v-list-item>
+          <v-list-item prepend-icon="mdi-check-circle" color="success" class="min-h-0">
+            <v-list-item-title class="text-body-2">เพิ่มเอกสารแผน Owner-based Cancel / Soft Delete สำหรับฟังก์ชั่นยกเลิกรายการวันหยุด</v-list-item-title>
           </v-list-item>
         </v-list>
 
         <div class="text-subtitle-2 font-weight-bold text-slate-400 mb-3 border-t pt-4">ประวัติการปรับปรุง (History)</div>
+        <div class="history-item mb-3">
+          <div class="text-caption font-weight-bold text-slate-600">V1.20260526</div>
+          <div class="text-caption text-slate-500">• เพิ่มระบบวิเคราะห์ประเภทวันหยุดอัตโนมัติในหน้า Form</div>
+          <div class="text-caption text-slate-500">• ปรับปรุงระบบบันทึก Audit Log ให้เสถียรและอ่านง่ายขึ้น</div>
+          <div class="text-caption text-slate-500">• แก้ไขบั๊กการดึงข้อมูล Primary Key ในตาราง HOSxP</div>
+          <div class="text-caption text-slate-500">• เพิ่มการตรวจสอบข้อมูลซ้ำ (Atomic Check) ที่ฝั่ง Backend</div>
+        </div>
         <div class="history-item mb-3">
           <div class="text-caption font-weight-bold text-slate-600">V1.20250522</div>
           <div class="text-caption text-slate-500">• รองรับปฏิทิน พ.ศ. และปรับโฉม Dashboard ใหม่</div>

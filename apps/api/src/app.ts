@@ -9,6 +9,8 @@ import { env } from './config/env.js';
 import { dbRoutes } from './routes/dbRoutes.js';
 import { healthRoutes } from './routes/healthRoutes.js';
 import { holidayRoutes } from './routes/holidayRoutes.js';
+import { settingsRoutes } from './routes/settingsRoutes.js';
+import { userRoutes } from './routes/userRoutes.js';
 import { HttpError, ErrorCode } from './utils/httpError.js';
 import { logger } from './utils/logger.js';
 
@@ -44,6 +46,8 @@ app.use('/api', dbRoutes);
 app.use('/api', authRoutes);
 app.use('/api', holidayRoutes);
 app.use('/api', auditRoutes);
+app.use('/api', settingsRoutes);
+app.use('/api', userRoutes);
 
 const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
   if (error instanceof ZodError) {
