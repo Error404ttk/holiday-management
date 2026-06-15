@@ -16,7 +16,7 @@ services:
       context: .
       dockerfile: Dockerfile.web
     ports:
-      - "8080:80"
+      - "5172:80"
     depends_on:
       - api
     restart: unless-stopped
