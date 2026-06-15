@@ -1,10 +1,22 @@
 services:
-  app:
-    image: hosxp-holiday-system:latest
+  api:
+    image: hosxp-holiday-api:latest
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - 3000:3000
+    expose:
+      - "3011"
     env_file:
       - .env
+    restart: unless-stopped
+
+  web:
+    image: hosxp-holiday-web:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    restart: unless-stopped

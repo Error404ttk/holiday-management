@@ -1,30 +1,41 @@
-FROM oven/bun:1 AS base
-
-RUN apt-get update && apt-get install -y \
-    dumb-init \
-    && rm -rf /var/lib/apt/lists/*
+FROM node:20-slim AS build
 
 WORKDIR /app
-COPY package.json bun.lockb ./
-RUN bun install --forzen-lockfile
+
+COPY package.json package-lock.json ./
+COPY apps/api/package.json apps/api/
+COPY apps/web/package.json apps/web/
+
+RUN npm ci
 
 COPY . .
+
+RUN npm run build --workspace apps/api
 
 FROM node:20-slim AS production
 
 RUN apt-get update && apt-get install -y \
     dumb-init \
-    vim \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && npm install -g pm2
 
-WORKDIR /app    
-COPY --from=base /app/.output ./.output
-COPY . .
+WORKDIR /app
 
-RUN useradd -u 1001 -s /bin/bash -m nuxt && chown -R nuxt:nuxt /app
-USER nuxt
+COPY package.json package-lock.json ./
+COPY apps/api/package.json apps/api/
+COPY apps/web/package.json apps/web/
 
-EXPOSE 3000
+RUN npm ci --omit=dev --workspace apps/api
 
+COPY --from=build /app/apps/api/dist ./apps/api/dist
+COPY ecosystem.config.cjs ./
 
-CMD ["node", ".output/server/index.mjs"]
+RUN useradd -u 1001 -s /bin/bash -m appuser && chown -R appuser:appuser /app
+USER appuser
+
+ENV NODE_ENV=production
+
+EXPOSE 3011
+
+ENTRYPOINT ["dumb-init", "--"]
+CMD ["pm2-runtime", "start", "ecosystem.config.cjs", "--only", "hosxp-holiday-api", "--env", "production"]
